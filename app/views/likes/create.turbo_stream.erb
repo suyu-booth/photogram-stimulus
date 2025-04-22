@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "#{dom_id(@like.photo)}_likes" do %>
+  <%= render "photos/likes", photo: @like.photo %>
+<% end %>

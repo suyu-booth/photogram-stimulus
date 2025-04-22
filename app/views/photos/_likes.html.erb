@@ -1,0 +1,17 @@
+<div id="<%= dom_id(photo) %>_likes">
+  <div class="d-flex align-items-center">
+    <%= pluralize(photo.likes_count, "like") %>
+
+    <% like = current_user.likes.find_by(photo: photo) %>
+
+    <% if like %>
+      <%= button_to like, method: :delete, class: "btn btn-link link-underline-dark link-underline-opacity-0 link-underline-opacity-100-hover" do %>
+        <i class="fas fa-heart fa-fw"></i>
+
+        Un-like
+      <% end %>
+    <% else %>
+      <%= render "likes/form", like: photo.likes.build(fan: current_user) %>
+    <% end %>
+  </div>
+</div>

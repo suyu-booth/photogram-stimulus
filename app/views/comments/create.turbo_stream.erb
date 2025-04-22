@@ -1,0 +1,7 @@
+<%= turbo_stream.before "#{dom_id(@comment.photo)}_new_comment_form" do %>
+  <%= render @comment %>
+<% end %>
+
+<%= turbo_stream.replace "#{dom_id(@comment.photo)}_new_comment_form" do %>
+  <%= render "form", comment: @comment.photo.comments.build %>
+<% end %>

@@ -1,0 +1,3 @@
+<%= turbo_stream.replace_all ".#{dom_id(@follow_request.recipient)}" do %>
+  <%= render "follow_requests/follow_unfollow", sender: @follow_request.sender, recipient: @follow_request.recipient %>
+<% end %>
