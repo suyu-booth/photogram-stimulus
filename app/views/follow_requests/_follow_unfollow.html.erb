@@ -3,11 +3,11 @@
 
   <% if follow_request %>
     <% if follow_request.pending? %>
-      <%= link_to follow_request, remote: true, method: :delete, class: "#{dom_id(follow_request)} btn btn-outline-secondary" do %>
+      <%= button_to follow_request, method: :delete, form_class: dom_id(follow_request), class: "btn btn-outline-secondary" do %>
         Un-request
       <% end %>
     <% elsif follow_request.accepted? %>
-      <%= link_to follow_request, remote: true, method: :delete, class: "#{dom_id(follow_request)} btn btn-outline-secondary" do %>
+      <%= button_to follow_request, method: :delete, form_class: dom_id(follow_request), class: "btn btn-outline-secondary" do %>
         Un-follow
       <% end %>
     <% end %>
