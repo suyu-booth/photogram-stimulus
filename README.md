@@ -1,3 +1,3 @@
-# photogram-turbo-streams
+# photogram-stimulus
 
-https://photogram-turbo-streams.matchthetarget.com/
+https://photogram-stimulus.matchthetarget.com/

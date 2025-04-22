@@ -2,6 +2,9 @@ desc "Fill the database tables with some sample data"
 task sample_data: :environment do
   starting = Time.now
 
+  # Clean up existing uploaded files
+  FileUtils.rm_rf(Rails.root.join("public", "uploads"))
+
   FollowRequest.destroy_all
   Comment.destroy_all
   Like.destroy_all
@@ -21,32 +24,6 @@ task sample_data: :environment do
   people << { first_name: "Dave", last_name: "Smith" }
   people << { first_name: "Eve", last_name: "Smith" }
 
-  avatar_images = [
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179672/10_tr3zoy.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179671/9_ozfgiu.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179671/8_pwngi1.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179671/7_pugev9.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179671/6_mobbi4.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179670/5_g6rxlz.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179670/4_qpszok.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179670/3_dymuoe.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179670/2_fb9rdr.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179670/1_njmhvj.jpg"
-  ]
-
-  photo_images = [
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179692/10_op0tpz.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179691/9_iyhady.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179691/8_d5opde.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179691/7_rb5fmu.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179690/6_zvmuwq.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179690/5_ogrjwc.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179690/4_ow4t9b.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179689/3_fx6akk.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179689/2_kl1hpb.jpg",
-    "https://res.cloudinary.com/dzhwwlb9e/image/upload/v1743179689/1_rnywum.jpg"
-  ]
-
   people.each do |person|
     username = person.fetch(:first_name).downcase
     secret = false
@@ -55,7 +32,7 @@ task sample_data: :environment do
       secret = true
     end
 
-    user = User.new(
+    user = User.create(
       email: "#{username}@example.com",
       password: "password",
       username: username.downcase,
@@ -66,12 +43,9 @@ task sample_data: :environment do
         random_sentences_to_add: 4
       ),
       website: Faker::Internet.url,
-      private: secret
+      private: secret,
+      avatar_image: File.open("#{Rails.root}/public/avatars/#{rand(1..10)}.jpeg")
     )
-
-    # Skip validations and callbacks to set the avatar_image directly
-    user.save(validate: false)
-    user.update_column(:avatar_image, avatar_images.sample)
   end
 
   users = User.all
@@ -104,13 +78,10 @@ task sample_data: :environment do
 
   users.each do |user|
     rand(15).times do
-      photo = user.own_photos.new(
-        caption: Faker::Quote.jack_handey
+      photo = user.own_photos.create(
+        caption: Faker::Quote.jack_handey,
+        image: File.open("#{Rails.root}/public/photos/#{rand(1..10)}.jpeg")
       )
-
-      # Skip validations and callbacks to set the image directly
-      photo.save(validate: false)
-      photo.update_column(:image, photo_images.sample)
 
       user.followers.each do |follower|
         if rand < 0.5
