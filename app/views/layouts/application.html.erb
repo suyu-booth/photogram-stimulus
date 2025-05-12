@@ -29,16 +29,14 @@
     <%= render "shared/navbar" %>
     
     <div class="container">
-      <div class="row mb-4">
-        <div class="col-md-6 offset-md-3">
-          <% if notice.present? %>
-            <%= render "shared/flash", message: notice, css_class: "success" %>
-          <% end %>
+      <div id="toasts" class="toast-container position-fixed top-0 end-0 p-3">
+        <% if flash[:notice].present? %>
+          <%= render "shared/toast", message: flash[:notice], title: "Notice" %>
+        <% end %>
 
-          <% if alert.present? %>
-            <%= render "shared/flash", message: alert, css_class: "danger" %>
-          <% end %>
-        </div>
+        <% if flash[:alert].present? %>
+          <%= render "shared/toast", message: flash[:alert], title: "Alert" %>
+        <% end %>
       </div>
 
       <%= yield %>

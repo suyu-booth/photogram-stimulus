@@ -22,7 +22,8 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-        format.html { redirect_back fallback_location: root_path, notice: "Comment was successfully created." }
+        flash[:notice] = "Comment was successfully created."
+        format.html { redirect_back fallback_location: root_path}
         format.json { render :show, status: :created, location: @comment }
         format.turbo_stream
       else
